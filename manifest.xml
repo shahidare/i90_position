@@ -1,0 +1,15 @@
+<package>
+  <description brief="i90_position">
+
+     i90_position
+
+  </description>
+  <author>hee502</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/i90_position</url>
+  <depend package="roscpp"/>
+
+</package>
+
+
