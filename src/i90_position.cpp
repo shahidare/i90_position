@@ -85,7 +85,7 @@ void recalculateTranslation(const std_msgs::UInt8 iTransFlag){
 	currentPos.fYawAngle = prevPos.fYawAngle+iTransError/2;  // Compensates error. 0.235 is angular precision of wheel encoder in degrees.
 	currentPos.fXPos = prevPos.fXPos+(fDistanceTravelled*(cos(currentPos.fYawAngle*(3.1416/180)))); // Updates position of i90
 	currentPos.fXPos = prevPos.fXPos+(fDistanceTravelled*(sin(currentPos.fYawAngle*(3.1416/180))));
-	currentPos.fYawAngle = prevPos.fYawAngle+iTransError/2;  // Compensates error. 0.235 is angular precision of wheel encoder in degrees.
+	currentPos.fYawAngle = currentPos.fYawAngle+iTransError/2;  // Compensates error. 0.235 is angular precision of wheel encoder in degrees.
 	prevPos.fYawAngle=currentPos.fYawAngle;  // Updates previous position as current position to use for next calculation
 	prevPos.fXPos=currentPos.fXPos;
 	prevPos.fYPos=currentPos.fYPos;
@@ -111,16 +111,15 @@ void recalculateRotation(const std_msgs::UInt8 iRotFlag){
 	iPrevEnc[1]=iCurEnc[1];
 	
 	iRotError=iEncoderDifference[1]-iEncoderDifference[0];  // Calulates the error in wheel encoders
-	currentPos.fYawAngle = prevPos.fYawAngle+(iRotError*0.235);// Compensates angular error. 0.235 is angular precision of wheel encoder in degrees.
+	currentPos.fYawAngle = prevPos.fYawAngle+(((iRotError/0.30)*0.00066)/2);// Compensates angular error. 0.235 is angular precision of wheel encoder in degrees.
 	
 	fDistanceTravelled=iRotError*0.00066;    // Compensates compensates error
 	currentPos.fXPos = prevPos.fXPos+(fDistanceTravelled*(cos(currentPos.fYawAngle*(3.1416/180)))); // Compensates error in position
 	currentPos.fXPos = prevPos.fXPos+(fDistanceTravelled*(sin(currentPos.fYawAngle*(3.1416/180))));
-
-	if(iRotError>=0)   // Calculates new yaw using difference in the value of wheel with minimum difference
-		currentPos.fYawAngle = currentPos.fYawAngle+(iEncoderDifference[0]*0.235);
-	else
-		currentPos.fYawAngle = currentPos.fYawAngle+(iEncoderDifference[1]*0.235);
+	currentPos.fYawAngle = currentPos.fYawAngle+(((iRotError/0.30)*0.00066)/2);
+	
+	currentPos.fYawAngle = currentPos.fYawAngle+(((iEncoderDifference[0]+iEncoderDifference[1])/2)*0.235);
+	
 
 	prevPos.fYawAngle=currentPos.fYawAngle;   // Updates previous position as current position to use for next calculation
 	prevPos.fXPos=currentPos.fXPos;
