@@ -78,15 +78,14 @@ void recalculateTranslation(const std_msgs::UInt8 iTransFlag){
 	iPrevEnc[0]=iCurEnc[0];    //Updating previous encoder values to current encoder readings to use for next translation
 	iPrevEnc[1]=iCurEnc[1];
 
-	iTransError=iEncoderDifference[1]-iEncoderDifference[0]; // Calulates the error in wheel encoders
-	if(iTransError>=0)  // Calculates distance using difference in the value of wheel with minimum difference
-		fDistanceTravelled=iEncoderDifference[0]*0.00066; // 0.00066 is precision of wheel encoder for linear movement
-	else
-		fDistanceTravelled=iEncoderDifference[1]*0.00066;
+	iTransError=(((iEncoderDifference[1]-iEncoderDifference[0])/0.30)*0.00066); // Calulates the error in wheel encoders
+	fDistanceTravelled=((iEncoderDifference[0]+iEncoderDifference[1])/2)*0.00066; // 0.00066 is precision of wheel encoder for linear movement
+
 	
-	currentPos.fYawAngle = prevPos.fYawAngle+(iTransError*0.235);  // Compensates error. 0.235 is angular precision of wheel encoder in degrees.
+	currentPos.fYawAngle = prevPos.fYawAngle+iTransError/2;  // Compensates error. 0.235 is angular precision of wheel encoder in degrees.
 	currentPos.fXPos = prevPos.fXPos+(fDistanceTravelled*(cos(currentPos.fYawAngle*(3.1416/180)))); // Updates position of i90
 	currentPos.fXPos = prevPos.fXPos+(fDistanceTravelled*(sin(currentPos.fYawAngle*(3.1416/180))));
+	currentPos.fYawAngle = prevPos.fYawAngle+iTransError/2;  // Compensates error. 0.235 is angular precision of wheel encoder in degrees.
 	prevPos.fYawAngle=currentPos.fYawAngle;  // Updates previous position as current position to use for next calculation
 	prevPos.fXPos=currentPos.fXPos;
 	prevPos.fYPos=currentPos.fYPos;
